@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ecommerce.Abstruction\Ecommerce.Abstruction.csproj" />
+    <ProjectReference Include="..\Ecommerce.Domain\Ecommerce.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
