@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Abstruction.IServices;
+using Ecommerce.Shared.Common;
 using Ecommerce.Shared.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,9 +15,9 @@ namespace Econnerce.Presentaion.Controllers
     public class ProductController(IServiceManger serviceManger):ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProduct()
+        public async Task<ActionResult<PaginationResult<ProductDto>>> GetAllProduct([FromQuery]ProductQueryParams queryParams)
         { 
-            var products = await serviceManger.ProductService.GetAllProductAsync();
+            var products = await serviceManger.ProductService.GetAllProductAsync(queryParams);
             return Ok(products);
 
         }

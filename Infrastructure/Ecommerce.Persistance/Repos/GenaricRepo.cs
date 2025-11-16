@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Domain.Contracts.Repos;
+using Ecommerce.Domain.Contracts.specifications;
 using Ecommerce.Domain.Models;
 using Ecommerce.Persistance.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -33,10 +34,22 @@ namespace Ecommerce.Persistance.Repos
         public void Update(TEntity entity)=> context.Set<TEntity>().Update(entity);
         public void Delete(TEntity entity)=> context.Set<TEntity>().Remove(entity);
 
+        public async Task<IEnumerable<TEntity>> GetAllWithSpecificationsAsync(ISpecifications<TEntity, TKey> specifications)
+        {
+           var Query=await SpeceificationEvaluator.CreateQuery(context.Set<TEntity>(), specifications).ToListAsync();
+            return Query;
+        }   
 
+        public async Task<TEntity?> GetByIdWithSpecificationsAsync(ISpecifications<TEntity, TKey> specifications)
+        {
+            var Query = await SpeceificationEvaluator.CreateQuery(context.Set<TEntity>(), specifications).FirstOrDefaultAsync();
+            return Query;
+        }
 
-
-
-
+        public async Task<int> GetCountWithSpecificationsAsync(ISpecifications<TEntity, TKey> specifications)
+        {
+            var Query = await SpeceificationEvaluator.CreateQuery(context.Set<TEntity>(), specifications).CountAsync();
+            return Query;
+        }
     }
 }

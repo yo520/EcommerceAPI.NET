@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ecommerce.Domain.Contracts.seed
+namespace Ecommerce.Domain.Exceptions
 {
-    public interface IDataSeeding
+    public class ProductNotFound(int Id): NotFoundException($"Product with id {Id} Not Found")
     {
-        void SeedData();
-        Task IdentitySeedData();
-
     }
 }

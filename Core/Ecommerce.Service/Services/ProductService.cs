@@ -1,13 +1,16 @@
-﻿using Ecommerce.Abstruction.IServices;
-using Ecommerce.Shared.Dtos;
+﻿using AutoMapper;
+using Ecommerce.Abstruction.IServices;
 using Ecommerce.Domain.Contracts.UOW;
+using Ecommerce.Domain.Exceptions;
+using Ecommerce.Domain.Models.Products;
+using Ecommerce.Service.Specifications;
+using Ecommerce.Shared.Common;
+using Ecommerce.Shared.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ecommerce.Domain.Models.Products;
-using AutoMapper;
 
 namespace Ecommerce.Domain.UOf
 {
@@ -21,12 +24,16 @@ namespace Ecommerce.Domain.UOf
             return BrandDto;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllProductAsync()
+        public async Task<PaginationResult<ProductDto>> GetAllProductAsync(ProductQueryParams queryParams)
         {
-           var productRepo=unitOfWork.GetRepository<product, int>();
-            var products=await  productRepo.GetAllAsync();
-            var productDto=mapper.Map<IEnumerable<product>, IEnumerable<ProductDto>>(products);
-            return productDto;
+            var specs = new ProductSpeceifications(queryParams);
+            var productRepo=unitOfWork.GetRepository<product, int>();
+            var products=await  productRepo.GetAllWithSpecificationsAsync(specs);
+            var Data=mapper.Map<IEnumerable<product>, IEnumerable<ProductDto>>(products);
+            var PageSize=Data.Count();
+            var countSpecs = new CountProductSpecification(queryParams);
+            var totalCount = await productRepo.GetCountWithSpecificationsAsync(countSpecs);
+            return new PaginationResult<ProductDto>(queryParams.PageIndex,PageSize,totalCount,Data);
         }
 
         public async Task<IEnumerable<TypeDto>> GetAllTypesAsync()
@@ -39,9 +46,14 @@ namespace Ecommerce.Domain.UOf
 
         public async Task<IEnumerable<ProductDto>> GetProductByIdAsync(int id)
         {
+            var specs = new ProductSpeceifications(id);
             var productRepo = unitOfWork.GetRepository<product, int>();
-            var Product = await productRepo.GetByIdAsync(id);
+            var Product = await productRepo.GetByIdWithSpecificationsAsync(specs);
             var productDto = mapper.Map<product, ProductDto>(Product);
+            if(Product==null)
+            {
+                throw new ProductNotFound(id);
+            }
             return (IEnumerable<ProductDto>)productDto;
 
         }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ecommerce.Domain.Models.Baskets;
 using Ecommerce.Domain.Models.Products;
 using Ecommerce.Shared.Dtos;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,10 @@ namespace Ecommerce.Service.MappingProfile
 
             CreateMap<productBrand, BrandDto>();
             CreateMap<productType, TypeDto>();
+            CreateMap<CustomarBasket,BasketDto>().ReverseMap();
+            CreateMap<BasketItem, BasketitemDto>().ReverseMap();
+
+
         }
     }
 }
