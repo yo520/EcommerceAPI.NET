@@ -19,10 +19,19 @@ namespace Ecommerce.Service.Services
         private readonly Lazy<IProductService> LazyproductService =new Lazy<IProductService>(()=>new ProductService(unitOfWork,mapper));
         public IProductService ProductService => LazyproductService.Value;
 
+
+
         private readonly Lazy<IBasketService> LazybasketService = new Lazy<IBasketService>(() => new BasketService(basketRepository, mapper));
         public IBasketService BasketService => LazybasketService.Value;
 
+
+
         private readonly Lazy<IAuthenticationService> LazyAuthenticationService = new Lazy<IAuthenticationService>(()=>new AuthenticationService(userManager,configuration,mapper));
         public IAuthenticationService AuthenticationService => LazyAuthenticationService.Value;
+
+
+
+        private readonly Lazy<IOrderServices> LazyOrderService =new Lazy<IOrderServices>(() => new OrderService(mapper, basketRepository, unitOfWork));
+        public IOrderServices OrderService => LazyOrderService.Value;
     }
 }

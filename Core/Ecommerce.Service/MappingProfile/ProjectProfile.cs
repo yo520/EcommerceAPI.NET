@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ecommerce.Domain.Models.Baskets;
+using Ecommerce.Domain.Models.Order;
 using Ecommerce.Domain.Models.Products;
 using Ecommerce.Persistance.Identity.Models;
 using Ecommerce.Shared.Dtos;
@@ -26,6 +27,13 @@ namespace Ecommerce.Service.MappingProfile
             CreateMap<CustomarBasket,BasketDto>().ReverseMap();
             CreateMap<BasketItem, BasketitemDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<AddressDto,OrderAddress>().ReverseMap();
+            CreateMap<Order, OrderToReturnDto>()
+                .ForMember(dest => dest.DeliveryMethod, options => options.MapFrom(src => src.DeliveryMethod.ShortName));
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(dest=>dest.ProductName,options=>options.MapFrom(src=>src.ItemOrdered.ProductName))
+                .ForMember(dest=>dest.PictureUrl,options=>options.MapFrom(new OrderPictureUrlResolver(configuration)));
+            CreateMap<DeliveryMethod,DeliveryMethodDto>().ReverseMap();
 
 
         }
